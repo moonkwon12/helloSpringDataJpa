@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:insert="~{common :: commonHead}">
+    <title>사용자 관리</title>
+</head>
+
+<body>
+<div class="container">
+    <!-- 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" th:href="@{/templates/products}">상품 관리 시스템</a>
+
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <span sec:authentication="name">관리자</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{/templates/admin}">관리자 대시보드</a></li>
+                        <li><a class="dropdown-item" th:href="@{/templates/products}">상품 목록</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item">로그아웃</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <h1 class="mt-5">사용자 관리</h1>
+
+    <div class="mb-3">
+        <a th:href="@{/admin}" class="btn btn-secondary">← 관리자 대시보드로 돌아가기</a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">전체 사용자 목록</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>권한</th>
+                    <th>계정 상태</th>
+                    <th>가입일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}">1</td>
+                    <td th:text="${user.name}">홍길동</td>
+                    <td th:text="${user.email}">user@example.com</td>
+                    <td>
+                        <span th:each="role,iterStat : ${user.roles}"
+                              th:class="${role.name() == 'ROLE_ADMIN'} ? 'badge bg-danger' : 'badge bg-primary'"
+                              th:text="${role.name() == 'ROLE_ADMIN'} ? '관리자' : '일반사용자'">
+                        </span>
+                    </td>
+                    <td>
+                        <span th:class="${user.enabled} ? 'badge bg-success' : 'badge bg-secondary'"
+                              th:text="${user.enabled} ? '활성화' : '비활성화'">
+                        </span>
+                    </td>
+                    <td th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">2024-01-01</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 사용자가 없을 때 -->
+            <div th:if="${#lists.isEmpty(users)}" class="text-center text-muted">
+                등록된 사용자가 없습니다.
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h6>사용자 권한 안내</h6>
+                <ul class="mb-0">
+                    <li><span class="badge bg-danger">관리자</span>: 모든 기능 사용 가능 (상품 CRUD, 사용자 관리)</li>
+                    <li><span class="badge bg-primary">일반사용자</span>: 상품 목록 조회만 가능</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:insert="~{common :: commonScript}"></div>
+</body>
+</html>
