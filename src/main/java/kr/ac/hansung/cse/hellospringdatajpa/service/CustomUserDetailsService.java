@@ -1,8 +1,8 @@
-package kr.ac.hansung.cse.hellospringdatajpa.security;
+package kr.ac.hansung.cse.hellospringdatajpa.service;
 
-
-import kr.ac.hansung.cse.hellospringdatajpa.entity.User;
+import kr.ac.hansung.cse.hellospringdatajpa.entity.MyUser;
 import kr.ac.hansung.cse.hellospringdatajpa.repo.UserRepository;
+import kr.ac.hansung.cse.hellospringdatajpa.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+        MyUser user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         return new CustomUserDetails(user);

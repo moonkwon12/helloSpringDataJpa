@@ -1,56 +1,20 @@
 package kr.ac.hansung.cse.hellospringdatajpa.service;
 
 import kr.ac.hansung.cse.hellospringdatajpa.dto.UserRegistrationDto;
-import kr.ac.hansung.cse.hellospringdatajpa.entity.Role;
-import kr.ac.hansung.cse.hellospringdatajpa.entity.User;
-import kr.ac.hansung.cse.hellospringdatajpa.repo.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import kr.ac.hansung.cse.hellospringdatajpa.entity.MyRole;
+import kr.ac.hansung.cse.hellospringdatajpa.entity.MyUser;
 
 import java.util.List;
-import java.util.Set;
 
-@Service
-@Transactional
-public class UserService {
+public interface UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    MyUser registerUser(UserRegistrationDto registrationDto);
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    List<MyUser> getAllUsers();
 
-    public User registerUser(UserRegistrationDto registrationDto) {
-        if (userRepository.existsByEmail(registrationDto.getEmail())) {
-            throw new RuntimeException("이미 등록된 이메일입니다.");
-        }
+    MyUser findByEmail(String email);
 
-        User user = new User();
-        user.setEmail(registrationDto.getEmail());
-        user.setName(registrationDto.getName());
-        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+    boolean existsByEmail(String email);
 
-        // 기본 권한 설정 (첫 번째 사용자는 ADMIN, 나머지는 USER)
-        if (userRepository.count() == 0) {
-            user.setRoles(Set.of(Role.ROLE_ADMIN));
-        } else {
-            user.setRoles(Set.of(Role.ROLE_USER));
-        }
 
-        return userRepository.save(user);
-    }
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
-    }
-
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
 }

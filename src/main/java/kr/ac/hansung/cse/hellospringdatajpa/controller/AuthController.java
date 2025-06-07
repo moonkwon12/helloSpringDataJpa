@@ -74,6 +74,6 @@ public class AuthController {
 
     @GetMapping("/access-denied")
     public String accessDenied() {
-        return "error/access-denied";
+        return "403";
     }
 }

@@ -1,7 +1,6 @@
 package kr.ac.hansung.cse.hellospringdatajpa.controller;
 
-import kr.ac.hansung.cse.hellospringdatajpa.entity.Role;
-import kr.ac.hansung.cse.hellospringdatajpa.entity.User;
+import kr.ac.hansung.cse.hellospringdatajpa.entity.MyUser;
 import kr.ac.hansung.cse.hellospringdatajpa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,13 +21,14 @@ public class AdminController {
 
     @GetMapping
     public String adminDashboard(Model model) {
-        List<User> users = userService.getAllUsers();
+        List<MyUser> users = userService.getAllUsers();
 
-        // 사용자 통계 계산 (roles는 Set<Role> 형태)
+        // 사용자 통계 계산
         long totalUsers = users.size();
         long adminCount = users.stream()
                 .filter(user -> user.getRoles() != null &&
-                        user.getRoles().contains(Role.ROLE_ADMIN))
+                        user.getRoles().stream()
+                                .anyMatch(role -> "ROLE_ADMIN".equals(role.getRolename())))
                 .count();
         long userCount = totalUsers - adminCount;
 

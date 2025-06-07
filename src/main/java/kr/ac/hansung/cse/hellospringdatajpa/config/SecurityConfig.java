@@ -1,6 +1,6 @@
 package kr.ac.hansung.cse.hellospringdatajpa.config;
 
-import kr.ac.hansung.cse.hellospringdatajpa.security.CustomUserDetailsService;
+import kr.ac.hansung.cse.hellospringdatajpa.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
